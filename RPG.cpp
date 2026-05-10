@@ -3,9 +3,14 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <random>
 
+void GAME() {
+    std::string input;
+    std::cout << "-+-+-+-+-+-+-+-+-\n    RPG GAME\n-+-+-+-+-+-+-+-+-" << std::endl;
+}
 void rpgMenu() {
-    std::vector<std::string> menu = {"Battle", "Monsters", "Invetory", "exit"};
+    std::vector<std::string> menu = {"Battle", "Monsters", "Inventory", "exit"};
     std::vector<int> nums = {1, 2, 3, 4};
     std::cout << "-------------" << std::endl;
     for(size_t i = 0; i < nums.size(); i++) {
@@ -23,17 +28,37 @@ void monsters() {
     }
 }
 
+int randomMonster(std::vector<User>& Monsters) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, Monsters.size() - 1);
+    return dist(gen);
+}
+void playBattle(std::vector<User>& Monsters) {
+    int num = randomMonster(Monsters);
+    std::cout << Monsters[num].name << std::endl;
+}
+void battle(std::vector<Item>& items, std::vector<User>& Monsters) {
+    if(items.empty()) {
+        std::cout << "You do not have items for battle. Check your inventory." << std::endl;
+    }else{
+        playBattle(Monsters);
+    }
+}
+
 int main() {
+    
     std::string input;
-    std::cout << "-+-+-+-+-+-+-+-+-\n    RPG GAME\n-+-+-+-+-+-+-+-+-\nWelcome to RPG game." << std::endl;
+    std::vector<Item> items = loaditem();
     while(true) {
+        GAME();
         rpgMenu();
         std::cout << ">> ";
-        std::cin >> input;
+        getline(std::cin, input);
         if(isNumber(input)) {
             int iinput = stoi(input);
             if(iinput == 1) {
-
+                battle(items, Monsters);
             }else
             if(iinput == 2) {
                 monsters();
@@ -42,9 +67,6 @@ int main() {
                 runinventory();
             }else
             if(iinput == 4) {
-
-            }else
-            if(iinput == 5) {
                 break;
             }else {
                 std::cout << "Enter the valid number." << std::endl;
