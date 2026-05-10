@@ -148,6 +148,7 @@ inline std::vector<Item> loadshop() {
             shopitem.power = stoi(line.substr(p2 + 1, p3 - p2 - 1));
             shopitem.consumable = line.substr(p3 + 2) == "1";
         }
+        shopitems.push_back(shopitem);
     }
     return shopitems;
 }
@@ -212,6 +213,7 @@ inline void removeitem(std::vector<Item>& items) {
                         items[index].quantity -= 1;
                         if(items[index].quantity <= 0) {
                             items.erase(items.begin() + index);
+                            saveitem(items);
                         }else {
                             saveitem(items); 
                         }
@@ -229,6 +231,7 @@ inline void removeitem(std::vector<Item>& items) {
                     continue;
                 }
             }
+
         }
     }
 }
@@ -279,5 +282,4 @@ inline void runinventory() {
 struct User {
     std::string name;
     int hp;
-    int damsge;
 };
