@@ -10,7 +10,7 @@ void GAME() {
     std::cout << "-+-+-+-+-+-+-+-+-\n    RPG GAME\n-+-+-+-+-+-+-+-+-" << std::endl;
 }
 void rpgMenu() {
-    std::vector<std::string> menu = {"Battle", "Monsters", "Inventory", "exit"};
+    std::vector<std::string> menu = {"BATTLE", "MONSTERS", "INVENTORY", "EXIT"};
     std::vector<int> nums = {1, 2, 3, 4};
     std::cout << "-------------" << std::endl;
     for(size_t i = 0; i < nums.size(); i++) {
@@ -36,7 +36,6 @@ int randomMonster(std::vector<User>& Monsters) {
 void playBattle(std::vector<User>& Monsters, std::vector<Item>& items) {
     int num = randomMonster(Monsters);
     std::string input;
-    int hp = Monsters[num].hp;
     while(true) {
         std::cout << "Your enemy is: " << Monsters[num].name << " | HP: " << hp << std::endl;
         showitem(items);
@@ -47,19 +46,21 @@ void playBattle(std::vector<User>& Monsters, std::vector<Item>& items) {
             continue;
         }else {
             if(isNumber(input)) {
-                int iinput = stoi(input);
-                int index = iinput - 1;
-                if(index >= 0 && index < items.size()) {
+                int index = stoi(input) - 1;
+                if(index >= 0 && index < (int)items.size()) {                   
                     if(items[index].autonomy == 0) {
-                        std::cout << "This item has used." << std::endl;
-                        break;
+                        std::cout << "This item has used up." << std::endl;                    
                     }else {
                         Monsters[num].hp -= items[index].power;
                         items[index].autonomy -= 1;
+                        if(items[index].autonomy == 0) {
+                            items.erase(items.begin() + index);
+                        }
                         saveitem(items);
                         std::cout << "Ha!" << std::endl;
                         break;
                     }
+                    
                 }else {
                     std::cout << "Enter the valid number." << std::endl;
                     continue;
