@@ -24,7 +24,7 @@ inline bool isNumber(const std::string& s) {
 }
 inline void Menu() {
     std::cout << "--------------" << std::endl;
-    std::vector<std::string> menu = {"Show item", "Item shop", "Remove item", "To the Battle"};
+    std::vector<std::string> menu = {"SHOW ITEMS", "ITEM SHOP", "REMOVE ITEMS", "BACK"};
     std::vector<int> nums = {1, 2, 3, 4};
 
     for(size_t i = 0; i < nums.size(); ++i) {
@@ -53,7 +53,7 @@ inline void itemshop() {
 inline void saveitem(std::vector<Item>& items) {
     std::ofstream file("items.txt");
     for(const Item& item : items) {
-        file << item.name << "|" << item.power << "|" << item.quantity << "|" << item.consumable << std::endl;
+        file << item.name << "|" << item.power << "|" << item.quantity << "|" << item.autonomy << "|" << item.consumable << std::endl;
     }
 }
 inline std::vector<Item> loaditem() {
@@ -66,11 +66,13 @@ inline std::vector<Item> loaditem() {
         size_t p1 = line.find("|");
         size_t p2 = line.find("|", p1 + 1);
         size_t p3 = line.find("|", p2 + 1);
-        if(p1 != std::string::npos && p2 != std::string::npos && p3 != std::string::npos) {
+        size_t p4 = line.find("|", p3 + 1);
+        if(p1 != std::string::npos && p2 != std::string::npos && p3 != std::string::npos && p4 != std::string::npos) {
             item.name = line.substr(0, p1);
             item.quantity = stoi(line.substr(p1 + 1, p2 - p1 - 1));
             item.power = stoi(line.substr(p2 + 1, p3 - p2 - 1));
-            item.consumable = line.substr(p3 + 2) == "1";
+            item.autonomy = stoi(line.substr(p3 + 1, p4 - p3 - 1));
+            item.consumable = line.substr(p4 + 1, 1) == "1";
         }
         items.push_back(item);
     }
