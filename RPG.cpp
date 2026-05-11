@@ -27,37 +27,73 @@ void monsters() {
         std::cout << "Name: " << Monsters[i].name << " HP: " << Monsters[i].hp << std::endl;
     }
 }
-
 int randomMonster(std::vector<User>& Monsters) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, Monsters.size() - 1);
     return dist(gen);
 }
-void playBattle(std::vector<User>& Monsters) {
+void playBattle(std::vector<User>& Monsters, std::vector<Item>& items) {
     int num = randomMonster(Monsters);
-    std::cout << Monsters[num].name << std::endl;
+    std::string input;
+    int hp = Monsters[num].hp;
+    while(true) {
+        std::cout << "Your enemy is: " << Monsters[num].name << " | HP: " << hp << std::endl;
+        showitem(items);
+        std::cout << "Choose the item to beat the enemy (Press x to exit).\n>> ";
+        std::getline(std::cin, input);
+        if(input.empty()){
+            std::cout << "Enter the number please." << std::endl;
+            continue;
+        }else {
+            if(isNumber(input)) {
+                int iinput = stoi(input);
+                int index = iinput - 1;
+                if(index >= 0 && index < items.size()) {
+                    if(items[index].autonomy == 0) {
+                        std::cout << "This item has used." << std::endl;
+                        break;
+                    }else {
+                        Monsters[num].hp -= items[index].power;
+                        items[index].autonomy -= 1;
+                        saveitem(items);
+                        std::cout << "Ha!" << std::endl;
+                        break;
+                    }
+                }else {
+                    std::cout << "Enter the valid number." << std::endl;
+                    continue;
+                }
+            }else
+            if(input == "x" || input == "X") {
+                break;
+            }else {
+                std::cout << "That's not a number." << std::endl;
+                continue;
+            }
+        }
+    }
 }
 void battle(std::vector<Item>& items, std::vector<User>& Monsters) {
     if(items.empty()) {
         std::cout << "You do not have items for battle. Check your inventory." << std::endl;
     }else{
-        playBattle(Monsters);
+        playBattle(Monsters, items);
     }
 }
 
 int main() {
-    
-    std::string input;
+    GAME();
     std::vector<Item> items = loaditem();
+    std::string input;
     while(true) {
-        GAME();
         rpgMenu();
         std::cout << ">> ";
         getline(std::cin, input);
         if(isNumber(input)) {
             int iinput = stoi(input);
             if(iinput == 1) {
+                std::vector<Item> items = loaditem();
                 battle(items, Monsters);
             }else
             if(iinput == 2) {
