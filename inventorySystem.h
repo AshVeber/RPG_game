@@ -8,6 +8,7 @@ struct Item {
     std::string name;
     int quantity;
     int power;
+    int autonomy;
     bool consumable;
 };
 inline bool isNumber(const std::string& s) {
@@ -23,8 +24,8 @@ inline bool isNumber(const std::string& s) {
 }
 inline void Menu() {
     std::cout << "--------------" << std::endl;
-    std::vector<std::string> menu = {"Show item", "Item shop", "Remove item", "Use item", "Exit"};
-    std::vector<int> nums = {1, 2, 3, 4, 5};
+    std::vector<std::string> menu = {"Show item", "Item shop", "Remove item", "To the Battle"};
+    std::vector<int> nums = {1, 2, 3, 4};
 
     for(size_t i = 0; i < nums.size(); ++i) {
         std::cout << nums[i] << ". " << menu[i] << std::endl;
@@ -34,19 +35,19 @@ inline void Menu() {
 inline void showitem(const std::vector<Item>& items) {
     std::cout << "-*-*-*-*-*-*-*-" << std::endl;
     for(size_t i = 0; i < items.size(); ++i) {
-        if(items[i].power == 0) {
-            std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " |used| " << std::endl;
+        if(items[i].autonomy == 0) {
+            std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " Autonomy:" << items[i].autonomy << " |used| " << std::endl;
         }else {
-            std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " |    | " << std::endl;
+            std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " Autonomy:" << items[i].autonomy << " |    | " << std::endl;
         }
     }
     std::cout << "*-*-*-*-*-*-*-*" << std::endl;
 }
-inline std::vector<Item> shopitems = {{"Axe", 10, 3}, {"Pickaxe", 5, 4}, {"Hoe", 11, 1}, {"Sword", 20, 5}, {"Shovel", 31, 2}};
+inline std::vector<Item> shopitems = {{"Axe", 10, 3, 3}, {"Pickaxe", 5, 4, 4}, {"Hoe", 11, 1, 1}, {"Sword", 20, 5, 5}, {"Shovel", 31, 2, 2}};
 inline void itemshop() {
     std::cout << "---------------\n   ITEM SHOP\n---------------" << std::endl;
     for(size_t i = 0; i < shopitems.size(); ++i) {
-        std::cout << i+1 << ") Name: " << shopitems[i].name << " | Quantity: " << shopitems[i].quantity << " | Power: " << shopitems[i].power << std::endl;
+        std::cout << i+1 << ") Name: " << shopitems[i].name << " | Quantity: " << shopitems[i].quantity << " | Power: " << shopitems[i].power << " | Autonomy: " << shopitems[i].autonomy << std::endl;
     }
 }
 inline void saveitem(std::vector<Item>& items) {
@@ -152,47 +153,6 @@ inline std::vector<Item> loadshop() {
     }
     return shopitems;
 }
-inline void useitem(std::vector<Item>& items) {
-    if(items.empty()) {
-        std::cout << "You do not have items." << std::endl;
-    }else {
-        showitem(items);
-        std::string input;
-        while(true) {
-            std::cout << "Choose the item you want to use (Press x to exit).\n>> ";
-            std::getline(std::cin, input);
-            if(input.empty()){
-                std::cout << "Enter the number please." << std::endl;
-                continue;
-            }else {
-                if(isNumber(input)) {
-                    int iinput = stoi(input);
-                    int index = iinput - 1;
-                    if(index >= 0 && index < items.size()) {
-                        if(items[index].power == 0) {
-                            std::cout << "This item has used." << std::endl;
-                            break;
-                        }else {
-                            items[index].power -= 1;
-                            saveitem(items);
-                            std::cout << "Item was used." << std::endl;
-                            break;
-                        }
-                    }else {
-                        std::cout << "Enter the valid number." << std::endl;
-                        continue;
-                    }
-                }else
-                if(input == "x" || input == "X") {
-                    break;
-                }else {
-                    std::cout << "That's not a number." << std::endl;
-                    continue;
-                }
-            }
-        }
-    }
-}
 inline void removeitem(std::vector<Item>& items) {
     if(items.empty()) {
         std::cout << "You do not have items to remove" << std::endl;
@@ -263,9 +223,6 @@ inline void runinventory() {
                     removeitem(items);
                 }else
                 if(iinput == 4) {
-                    useitem(items);
-                }else
-                if(iinput == 5) {
                     break;
                 }else {
                     std::cout << "Enter the valid number." << std::endl;
