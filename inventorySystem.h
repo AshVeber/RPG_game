@@ -9,6 +9,7 @@ struct Item {
     int quantity;
     int power;
     int autonomy;
+    int maxAutonomy;
     bool consumable;
 };
 inline bool isNumber(const std::string& s) {
@@ -43,7 +44,7 @@ inline void showitem(const std::vector<Item>& items) {
     }
     std::cout << "*-*-*-*-*-*-*-*" << std::endl;
 }
-inline std::vector<Item> shopitems = {{"Axe", 10, 3, 3}, {"Pickaxe", 5, 4, 4}, {"Hoe", 11, 1, 1}, {"Sword", 20, 5, 5}, {"Shovel", 31, 2, 2}};
+inline std::vector<Item> shopitems = {{"Axe", 10, 3, 3, 3}, {"Pickaxe", 5, 4, 4, 4}, {"Hoe", 11, 1, 1, 1}, {"Sword", 20, 5, 5, 5}, {"Shovel", 31, 2, 2, 2}};
 inline void itemshop() {
     std::cout << "---------------\n   ITEM SHOP\n---------------" << std::endl;
     for(size_t i = 0; i < shopitems.size(); ++i) {
@@ -69,8 +70,8 @@ inline std::vector<Item> loaditem() {
         size_t p4 = line.find("|", p3 + 1);
         if(p1 != std::string::npos && p2 != std::string::npos && p3 != std::string::npos && p4 != std::string::npos) {
             item.name = line.substr(0, p1);
-            item.quantity = stoi(line.substr(p1 + 1, p2 - p1 - 1));
-            item.power = stoi(line.substr(p2 + 1, p3 - p2 - 1));
+            item.power = stoi(line.substr(p1 + 1, p2 - p1 - 1));
+            item.quantity = stoi(line.substr(p2 + 1, p3 - p2 - 1));
             item.autonomy = stoi(line.substr(p3 + 1, p4 - p3 - 1));
             item.consumable = line.substr(p4 + 1, 1) == "1";
         }
