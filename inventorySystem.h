@@ -36,11 +36,7 @@ inline void Menu() {
 inline void showitem(const std::vector<Item>& items) {
     std::cout << "-*-*-*-*-*-*-*-" << std::endl;
     for(size_t i = 0; i < items.size(); ++i) {
-        if(items[i].autonomy == 0) {
-            std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " Autonomy:" << items[i].autonomy << " |used| " << std::endl;
-        }else {
-            std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " Autonomy:" << items[i].autonomy << " |    | " << std::endl;
-        }
+        std::cout << i+1 << ") Item:" << items[i].name << " Quantity:" << items[i].quantity << " Power:" << items[i].power << " Autonomy:" << items[i].autonomy << std::endl;
     }
     std::cout << "*-*-*-*-*-*-*-*" << std::endl;
 }
@@ -54,7 +50,7 @@ inline void itemshop() {
 inline void saveitem(std::vector<Item>& items) {
     std::ofstream file("items.txt");
     for(const Item& item : items) {
-        file << item.name << "|" << item.power << "|" << item.quantity << "|" << item.autonomy << "|" << item.consumable << std::endl;
+        file << item.name << "|" << item.power << "|" << item.quantity << "|" << item.autonomy << "|" << item.maxAutonomy << "|" << item.consumable << std::endl;
     }
 }
 inline std::vector<Item> loaditem() {
@@ -68,12 +64,14 @@ inline std::vector<Item> loaditem() {
         size_t p2 = line.find("|", p1 + 1);
         size_t p3 = line.find("|", p2 + 1);
         size_t p4 = line.find("|", p3 + 1);
-        if(p1 != std::string::npos && p2 != std::string::npos && p3 != std::string::npos && p4 != std::string::npos) {
+        size_t p5 = line.find("|", p4 + 1);
+        if(p1 != std::string::npos && p2 != std::string::npos && p3 != std::string::npos && p4 != std::string::npos && p5 != std::string::npos) {
             item.name = line.substr(0, p1);
             item.power = stoi(line.substr(p1 + 1, p2 - p1 - 1));
             item.quantity = stoi(line.substr(p2 + 1, p3 - p2 - 1));
             item.autonomy = stoi(line.substr(p3 + 1, p4 - p3 - 1));
-            item.consumable = line.substr(p4 + 1, 1) == "1";
+            item.maxAutonomy = stoi(line.substr(p4 + 1, p5 - p4 - 1));
+            item.consumable = line.substr(p5 + 1, 1) == "1";
         }
         items.push_back(item);
     }
@@ -216,7 +214,7 @@ inline void runinventory() {
                     if(!(items.empty())) {
                         showitem(items);
                     }else{
-                        std::cout << "You do not have items." << std::endl;
+                        std::cout << "Empty." << std::endl;
                     }
                 }else
                 if(iinput == 2) {
